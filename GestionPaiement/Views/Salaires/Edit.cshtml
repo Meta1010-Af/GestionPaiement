@@ -1,0 +1,57 @@
+﻿@model GestionPaiement.Models.DataModel.Salaire
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="container">
+    <div class="alert alert-primary">
+        <h1><marquee>Application de gestion de paiement</marquee></h1>
+    </div>
+</div>
+
+<h4>Salaire</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdSalaire" />
+            <div class="form-group">
+                <label asp-for="AgentId" class="control-label"></label>
+                <select asp-for="AgentId" class="form-control" asp-items="ViewBag.AgentId"></select>
+                <span asp-validation-for="AgentId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SalaireBrut" class="control-label"></label>
+                <input asp-for="SalaireBrut" class="form-control" />
+                <span asp-validation-for="SalaireBrut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SalaireNet" class="control-label"></label>
+                <input asp-for="SalaireNet" class="form-control" />
+                <span asp-validation-for="SalaireNet" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDePaie" class="control-label"></label>
+                <input asp-for="DateDePaie" class="form-control" />
+                <span asp-validation-for="DateDePaie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-link">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

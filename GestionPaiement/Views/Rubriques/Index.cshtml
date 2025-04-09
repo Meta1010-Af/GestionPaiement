@@ -1,0 +1,51 @@
+﻿@model IEnumerable<GestionPaiement.Models.DataModel.Rubrique>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="alert alert-primary">
+        <h1><marquee>Application de gestion de paiement</marquee></h1>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Montant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Montant)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdRubrique"><i class="fas fa-pencil-alt"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.IdRubrique"><i class="fas fa-search"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdRubrique"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

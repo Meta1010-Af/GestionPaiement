@@ -1,0 +1,57 @@
+﻿@model IEnumerable<GestionPaiement.Models.DataModel.Salaire>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="alert alert-primary">
+        <h1><marquee>Application de gestion de paiement</marquee></h1>
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Agent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalaireBrut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalaireNet)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateDePaie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Agent.IdAgent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SalaireBrut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SalaireNet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateDePaie)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdSalaire"><i class="fas fa-pencil-alt"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.IdSalaire"><i class="fas fa-search"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdSalaire"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

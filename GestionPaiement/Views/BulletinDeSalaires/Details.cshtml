@@ -1,0 +1,50 @@
+﻿@model GestionPaiement.Models.DataModel.BulletinDeSalaire
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="alert alert-primary">
+        <h1><marquee>Application de gestion de paiement</marquee></h1>
+    </div>
+</div>
+
+<div>
+    <h4>BulletinDeSalaire</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Agent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Agent.IdAgent)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SalaireBrut)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SalaireBrut)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SalaireNet)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SalaireNet)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdBulletin">
+        <i class="fas fa-edit"></i> Edit
+    </a> |
+    <a asp-action="Index" class="btn btn-link">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
