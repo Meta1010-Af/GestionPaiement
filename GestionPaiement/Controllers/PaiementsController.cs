@@ -17,7 +17,6 @@ namespace GestionPaiement.Controllers
     {
         private readonly IPaiementRepository _repoPaiementRepository;
         private readonly IAgentRepository _repoAgentRepository;
-        private readonly RoleController _roleManager;
 
         public PaiementsController(IPaiementRepository repoPaiementRepository,
                                     IAgentRepository repoAgentRepository)
@@ -27,9 +26,22 @@ namespace GestionPaiement.Controllers
         }
 
         // GET: Paiements
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search)
         {
-            return View(await _repoPaiementRepository.GetAll());
+            // Récupère tous les paiements
+            var paiements = await _repoPaiementRepository.GetAll();
+
+            // Si un terme de recherche est fourni, filtre les paiements
+            if (!string.IsNullOrEmpty(search))
+            {
+                paiements = paiements.Where(p =>
+                    p.Agent.Prenom.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    p.Agent.Nom.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    p.ModeDePaiement.Contains(search, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
+
+            return View(paiements);
         }
 
         [Authorize(Roles = "Admin")]
@@ -55,25 +67,21 @@ namespace GestionPaiement.Controllers
         public async Task<IActionResult> CreateAsync()
         {
             var lstAgent = await _repoAgentRepository.GetAll();
-
             ViewData["AgentId"] = new SelectList(lstAgent, "IdAgent", "Nom");
             return View();
         }
 
         // POST: Paiements/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdPaiement,AgentId,MontantPaye,DatePaiement,ModeDePaiement")] Paiement paiement)
         {
-            if (ModelState.Count() > 0)
+            if (ModelState.IsValid)
             {
                 await _repoPaiementRepository.AddAsync(paiement);
                 return RedirectToAction(nameof(Index));
             }
             var lstAgent = await _repoAgentRepository.GetAll();
-
             ViewData["AgentId"] = new SelectList(lstAgent, "IdAgent", "Nom");
             return View(paiement);
         }
@@ -92,15 +100,13 @@ namespace GestionPaiement.Controllers
             {
                 return NotFound();
             }
-            var lstAgent = await _repoAgentRepository.GetAll();
 
+            var lstAgent = await _repoAgentRepository.GetAll();
             ViewData["AgentId"] = new SelectList(lstAgent, "IdAgent", "Nom");
             return View(paiement);
         }
 
         // POST: Paiements/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdPaiement,AgentId,MontantPaye,DatePaiement,ModeDePaiement")] Paiement paiement)
@@ -110,7 +116,7 @@ namespace GestionPaiement.Controllers
                 return NotFound();
             }
 
-            if (ModelState.Count() > 0)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -130,8 +136,8 @@ namespace GestionPaiement.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var lstAgent = await _repoAgentRepository.GetAll();
 
+            var lstAgent = await _repoAgentRepository.GetAll();
             ViewData["AgentId"] = new SelectList(lstAgent, "IdAgent", "Nom");
             return View(paiement);
         }

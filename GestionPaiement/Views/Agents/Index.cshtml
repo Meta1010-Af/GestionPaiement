@@ -8,63 +8,52 @@
     <div class="alert alert-primary">
         <h1><marquee>Application de gestion de paiement</marquee></h1>
     </div>
-</div>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Prenom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateEmbauche)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Poste)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SalaireBrut)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <!-- Barre de recherche -->
+    <form asp-action="Index" method="get" class="form-inline mb-3">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control mr-2" placeholder="Rechercher par nom ou prénom..." />
+        <button type="submit" class="btn btn-outline-success">Rechercher</button>
+    </form>
+
+    <p>
+        <a class="btn btn-outline-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+    </p>
+
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Prenom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateEmbauche)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Poste)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SalaireBrut)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdAgent"><i class="fas fa-pencil-alt"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdAgent"><i class="fas fa-search"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdAgent"><i class="fas fa-trash"></i></a>
-                </td>
+                <th>@Html.DisplayNameFor(model => model.First().Nom)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Prenom)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+                <th>@Html.DisplayNameFor(model => model.First().DateEmbauche)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Poste)</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>@Html.DisplayNameFor(model => model.First().SalaireBrut)</th>
+                }
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Nom)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Prenom)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DateEmbauche)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Poste)</td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>@($"{item.SalaireBrut:N0} FCFA")</td>
+                    }
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdAgent"><i class="fas fa-pencil-alt"></i></a> |
+                        <a asp-action="Details" asp-route-id="@item.IdAgent"><i class="fas fa-search"></i></a> |
+                        <a asp-action="Delete" asp-route-id="@item.IdAgent"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

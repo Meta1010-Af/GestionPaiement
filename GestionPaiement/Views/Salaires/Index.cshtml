@@ -11,8 +11,9 @@
 </div>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+    <a class="btn btn-outline-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -32,26 +33,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Agent.IdAgent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaireBrut)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaireNet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateDePaie)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Agent.Prenom @item.Agent.Nom
+                </td>
+                <td>
+                    @String.Format("{0:N0} FCFA", item.SalaireBrut)
+                </td>
+                <td>
+                    @String.Format("{0:N0} FCFA", item.SalaireNet)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDePaie)
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.IdSalaire"><i class="fas fa-pencil-alt"></i></a> |
                     <a asp-action="Details" asp-route-id="@item.IdSalaire"><i class="fas fa-search"></i></a> |
                     <a asp-action="Delete" asp-route-id="@item.IdSalaire"><i class="fas fa-trash"></i></a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

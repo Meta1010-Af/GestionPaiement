@@ -43,13 +43,17 @@
                 <input asp-for="Poste" class="form-control" />
                 <span asp-validation-for="Poste" class="text-danger"></span>
             </div>
+            @* Afficher SalaireBrut uniquement si l'utilisateur est admin *@
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="SalaireBrut" class="control-label"></label>
+                    <input asp-for="SalaireBrut" class="form-control" />
+                    <span asp-validation-for="SalaireBrut" class="text-danger"></span>
+                </div>
+            }
             <div class="form-group">
-                <label asp-for="SalaireBrut" class="control-label"></label>
-                <input asp-for="SalaireBrut" class="form-control" />
-                <span asp-validation-for="SalaireBrut" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-outline-success">
                     <i class="fas fa-save"></i> Save
                 </button>
             </div>

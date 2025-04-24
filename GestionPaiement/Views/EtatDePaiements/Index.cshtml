@@ -7,12 +7,19 @@
 <div class="container">
     <div class="alert alert-primary">
         <h1><marquee>Application de gestion de paiement</marquee></h1>
+        <h2>Bienvenue, @User.Identity.Name !</h2> <!-- Affiche l'email de l'utilisateur connecté -->
     </div>
 </div>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+    <a class="btn btn-outline-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
 </p>
+
+<!-- Barre de recherche -->
+<div class="mb-3">
+    <input type="text" class="form-control" id="search" placeholder="Rechercher un agent ou un paiement" />
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,30 +35,61 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalPaye)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Agent.IdAgent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateDebut)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateFin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPaye)
-            </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdEtat"><i class="fas fa-pencil-alt"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.IdEtat"><i class="fas fa-search"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdEtat"><i class="fas fa-trash"></i></a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Agent.Prenom @item.Agent.Nom
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDebut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateFin)
+                </td>
+                <td>
+                    @String.Format("{0:N0} FCFA", item.TotalPaye)
+                </td>
+                <td>
+                    <!-- Modifier -->
+                    <a asp-action="Edit" asp-route-id="@item.IdEtat" title="Modifier">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a> |
+
+                    <!-- Détails -->
+                    <a asp-action="Details" asp-route-id="@item.IdEtat" title="Voir Détails">
+                        <i class="fas fa-search"></i>
+                    </a> |
+
+                    <!-- Supprimer -->
+                    <a asp-action="Delete" asp-route-id="@item.IdEtat" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        // Filtrage de la recherche en fonction de l'entrée de l'utilisateur
+        document.getElementById('search').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const agentCell = row.cells[0].textContent.toLowerCase();
+                const totalPayeCell = row.cells[3].textContent.toLowerCase();
+                if (agentCell.includes(searchValue) || totalPayeCell.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

@@ -16,7 +16,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Paiement> Paiements { get; set; }
     public DbSet<Rubrique> Rubriques { get; set; }
     public DbSet<Salaire> Salaires { get; set; }
-    public DbSet<DashboardViewModel> TableauDeBord { get; set; }
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

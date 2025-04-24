@@ -27,10 +27,32 @@ namespace GestionPaiement.Controllers
         }
 
         // GET: EtatDePaiements
+        // GET: EtatDePaiements
         public async Task<IActionResult> Index()
         {
-            return View(await _repoEtatDePaiementRepository.GetAll());
+            var email = User.Identity?.Name;
+            ViewBag.EmailConnecte = email;
+
+            // Vérifier si l'utilisateur est un administrateur
+            if (User.IsInRole("Admin"))
+            {
+                // Si administrateur, afficher tous les états de paiement
+                var etats = await _repoEtatDePaiementRepository.GetAll();
+                return View(etats);
+            }
+
+            // Si l'utilisateur est un agent, récupérer l'agent actuel
+            var agent = await _repoAgentRepository.GetByEmailAsync(email);
+            if (agent == null)
+            {
+                return NotFound("Agent non trouvé.");
+            }
+
+            // Si agent, afficher uniquement les états de paiement de l'agent connecté
+            var etatsAgent = await _repoEtatDePaiementRepository.GetByAgentId(agent.IdAgent);
+            return View(etatsAgent);
         }
+
 
         [Authorize(Roles = "Admin")]
         // GET: EtatDePaiements/Details/5

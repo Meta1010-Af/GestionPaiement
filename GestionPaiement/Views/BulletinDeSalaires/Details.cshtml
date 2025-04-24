@@ -1,50 +1,47 @@
 ﻿@model GestionPaiement.Models.DataModel.BulletinDeSalaire
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Détails du Bulletin de Salaire";
 }
 
-<div class="container">
-    <div class="alert alert-primary">
-        <h1><marquee>Application de gestion de paiement</marquee></h1>
+<div class="container mt-4">
+    <div class="alert alert-primary text-center">
+        <h2>Application de gestion de paiement</h2>
     </div>
-</div>
 
-<div>
-    <h4>BulletinDeSalaire</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Agent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Agent.IdAgent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SalaireBrut)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SalaireBrut)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SalaireNet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SalaireNet)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdBulletin">
-        <i class="fas fa-edit"></i> Edit
-    </a> |
-    <a asp-action="Index" class="btn btn-link">
-        <i class="fas fa-arrow-left"></i>
-    </a>
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Détails du Bulletin de Salaire</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Agent</dt>
+                <dd class="col-sm-9">@Model.Agent?.Nom @Model.Agent?.Prenom</dd>
+
+                <dt class="col-sm-3">Date</dt>
+                <dd class="col-sm-9">@Model.Date.ToString("dd MMMM yyyy")</dd>
+
+                <dt class="col-sm-3">Salaire Brut</dt>
+                <dd class="col-sm-9">@Model.SalaireBrut.ToString("N0") FCFA</dd>
+
+                <dt class="col-sm-3">Salaire Net</dt>
+                <dd class="col-sm-9">@Model.SalaireNet.ToString("N0") FCFA</dd>
+            </dl>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="Edit" asp-route-id="@Model.IdBulletin" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Modifier
+            </a>
+
+            <form method="post" asp-action="EnvoyerEmail" asp-route-id="@Model.IdBulletin">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-envelope"></i> Envoyer par Email
+                </button>
+            </form>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
 </div>

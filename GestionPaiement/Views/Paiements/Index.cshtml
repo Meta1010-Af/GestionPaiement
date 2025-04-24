@@ -10,9 +10,20 @@
     </div>
 </div>
 
+<!-- Formulaire de recherche -->
+<form method="get" asp-action="Index">
+    <div class="input-group mb-3">
+        <input type="text" name="search" class="form-control" placeholder="Rechercher par Agent ou Mode de Paiement" value="@ViewData["SearchQuery"]" />
+        <button class="btn btn-outline-success" type="submit">
+            <i class="fas fa-search"></i> Rechercher
+        </button>
+    </div>
+</form>
+
 <p>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+    <a class="btn btn-outline-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,30 +39,31 @@
             <th>
                 @Html.DisplayNameFor(model => model.ModeDePaiement)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Agent.IdAgent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MontantPaye)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DatePaiement)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModeDePaiement)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Agent.Prenom @item.Agent.Nom
+                </td>
+                <td>
+                    @String.Format("{0:N0} FCFA", item.MontantPaye)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DatePaiement)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModeDePaiement)
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.IdPaiement"><i class="fas fa-pencil-alt"></i></a> |
                     <a asp-action="Details" asp-route-id="@item.IdPaiement"><i class="fas fa-search"></i></a> |
                     <a asp-action="Delete" asp-route-id="@item.IdPaiement"><i class="fas fa-trash"></i></a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

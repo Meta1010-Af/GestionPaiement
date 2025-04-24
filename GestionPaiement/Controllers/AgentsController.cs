@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using GestionPaiement.Data;
 using GestionPaiement.Models.DataModel;
-using Microsoft.AspNetCore.Authorization;
 using GestionPaiement.Repository;
-using Microsoft.AspNetCore.Identity;  // Ajout de cette ligne pour utiliser UserManager
 
 namespace GestionPaiement.Controllers
 {
@@ -17,32 +15,34 @@ namespace GestionPaiement.Controllers
     public class AgentsController : Controller
     {
         private readonly IAgentRepository _repoAgentRepository;
-        private readonly RoleController _roleManager;
-       
 
         public AgentsController(IAgentRepository repoAgentRepository)
         {
             _repoAgentRepository = repoAgentRepository;
-            
         }
 
         // GET: Agents
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var listAgent = await _repoAgentRepository.GetAll();
-            return View(listAgent);
-        }
+            ViewData["CurrentFilter"] = searchString;
 
+            IEnumerable<Agent> agents;
 
-        [Authorize(Roles = "Admin")]
-        // GET: Agents/Details/5 (accessible uniquement par un administrateur)
-        public async Task<IActionResult> Details(int id)
-        {
-            if (id == null)
+            if (string.IsNullOrWhiteSpace(searchString))
             {
-                return NotFound();
+                agents = await _repoAgentRepository.GetAll();
+            }
+            else
+            {
+                agents = await _repoAgentRepository.SearchAgentsAsync(searchString);
             }
 
+            return View(agents);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Details(int id)
+        {
             var agent = await _repoAgentRepository.GetById(id);
             if (agent == null)
             {
@@ -53,22 +53,26 @@ namespace GestionPaiement.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        // GET: Agents/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Agents/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdAgent,Nom,Prenom,Email,DateEmbauche,Poste,SalaireBrut")] Agent agent)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                agent.SalaireBrut = 0;
+            }
+
             if (ModelState.Count() > 0)
             {
                 await _repoAgentRepository.AddAsync(agent);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(agent);
         }
 
@@ -80,10 +84,10 @@ namespace GestionPaiement.Controllers
             {
                 return NotFound();
             }
+
             return View(agent);
         }
 
-        // POST: Agents/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdAgent,Nom,Prenom,Email,DateEmbauche,Poste,SalaireBrut")] Agent agent)
@@ -91,6 +95,17 @@ namespace GestionPaiement.Controllers
             if (id != agent.IdAgent)
             {
                 return NotFound();
+            }
+
+            if (!User.IsInRole("Admin"))
+            {
+                var existingAgent = await _repoAgentRepository.GetById(id);
+                if (existingAgent == null)
+                {
+                    return NotFound();
+                }
+
+                agent.SalaireBrut = existingAgent.SalaireBrut;
             }
 
             if (ModelState.Count() > 0)
@@ -101,24 +116,24 @@ namespace GestionPaiement.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    var existingAgent = await _repoAgentRepository.GetById(id);
-                    if (existingAgent == null)
+                    var exists = await _repoAgentRepository.GetById(id);
+                    if (exists == null)
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw; // Relancer l'exception si une erreur de concurrence se produit
+                        throw;
                     }
                 }
 
-                return RedirectToAction(nameof(Index)); // Rediriger vers la vue d'index après la mise à jour
+                return RedirectToAction(nameof(Index));
             }
+
             return View(agent);
         }
 
         [Authorize(Roles = "Admin")]
-        // GET: Agents/Delete/5 (accessible uniquement par un administrateur)
         public async Task<IActionResult> Delete(int id)
         {
             var agent = await _repoAgentRepository.GetById(id);
@@ -130,13 +145,15 @@ namespace GestionPaiement.Controllers
             return View(agent);
         }
 
-        // POST: Agents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var agent = await _repoAgentRepository.GetById(id);
-            if (agent == null) { return NotFound(); }
+            if (agent == null)
+            {
+                return NotFound();
+            }
 
             await _repoAgentRepository.Delete(id);
             return RedirectToAction(nameof(Index));

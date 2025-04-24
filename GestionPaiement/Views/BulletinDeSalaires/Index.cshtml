@@ -10,14 +10,23 @@
     </div>
 </div>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
-</p>
+    <!-- Barre de recherche -->
+    <form asp-action="Index" method="get" class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher par agent, mois..." aria-label="Search" name="searchQuery" value="@ViewData["SearchQuery"]" />
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+    </form>
+    <p>
+
+    </p>
+    <p>
+    <a class="btn btn-outline-primary" asp-action="Create"><i class="fas fa-plus"></i> Ajouter</a>
+    </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Agent)
+                Agent
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
@@ -32,26 +41,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Agent.IdAgent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaireBrut)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SalaireNet)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Agent.Prenom @item.Agent.Nom
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @($"{item.SalaireBrut:N0} FCFA")
+                </td>
+                <td>
+                    @($"{item.SalaireNet:N0} FCFA")
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.IdBulletin"><i class="fas fa-pencil-alt"></i></a> |
                     <a asp-action="Details" asp-route-id="@item.IdBulletin"><i class="fas fa-search"></i></a> |
                     <a asp-action="Delete" asp-route-id="@item.IdBulletin"><i class="fas fa-trash"></i></a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
